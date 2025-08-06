@@ -41,7 +41,12 @@ public class LeetCode {
 		 * System.out.println(myAtoi("words and 987"));
 		 * System.out.println(myAtoi("-91283472332"));
 		 */
-		System.out.println(isPalindrome(101));
+//		System.out.println(isPalindrome(101));
+		System.out.println(isMatch("aa", "a"));    // false
+        System.out.println(isMatch("aa", "a*"));   // true
+        System.out.println(isMatch("ab", ".*"));   // true
+        System.out.println(isMatch("aab", "c*a*b"));// true
+        System.out.println(isMatch("mississippi", "mis*is*p*.")); // false
 	}
 
 	public static int[] twoSum(int[] nums, int target) {
@@ -348,7 +353,7 @@ public class LeetCode {
 		System.out.println("reversed: " + reversed + "\n" + "original: " + x);
 		return reversed == original;
 	}
-	
+
 	public static boolean isPalindrome1(int x) {
 		if (x < 0 || x > Math.pow(2, 31) - 1) {
 			return false;
@@ -365,4 +370,45 @@ public class LeetCode {
 		System.out.println("reversed: " + reversed + "\n" + "original: " + x);
 		return (int) reversed == original;
 	}
+
+	// 10. Regular Expression Matching "aab", "c*a*b"
+	public static boolean isMatch(String s, String p) {
+	    // Input validation
+	    if (s.length() == 0 || s.length() > 20 || p.length() == 0 || p.length() > 20) {
+	        return false;
+	    }
+
+	    int sLen = s.length();
+	    int pLen = p.length();
+	    int i = 0, j = 0;
+
+	    while (i < sLen && j < pLen) {
+	        char sc = s.charAt(i);
+	        char pc = p.charAt(j);
+
+	        if (pc == '.' || pc == sc) {
+	            // Direct match or wildcard
+	            i++;
+	            j++;
+	        } else if (pc == '*') {
+	            // Match zero or more of previous character
+	            if (j > 0 && (s.charAt(i) == p.charAt(j - 1) || p.charAt(j - 1) == '.')) {
+	                i++; // consume one character from s
+	            } else {
+	                j++; // move past '*'
+	            }
+	        } else {
+	            // Mismatch
+	            return false;
+	        }
+	    }
+
+	    // Skip trailing '*' patterns like a*
+	    while (j + 1 < pLen && p.charAt(j + 1) == '*') {
+	        j += 2;
+	    }
+
+	    return i == sLen && j == pLen;
+	}
+
 }
