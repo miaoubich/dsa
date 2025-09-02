@@ -41,7 +41,12 @@ public class LeetCode {
 		 * System.out.println(myAtoi("words and 987"));
 		 * System.out.println(myAtoi("-91283472332"));
 		 */
-		System.out.println(isPalindrome(101));
+//		System.out.println(isPalindrome(101));
+		
+		ListNode listNode3 = new ListNode(1, new ListNode(2, new ListNode(3)));
+		System.out.print((listNode3));
+		System.out.println();
+		System.out.print(reverseList(listNode3));
 	}
 
 	public static int[] twoSum(int[] nums, int target) {
@@ -341,6 +346,7 @@ public class LeetCode {
 	public static boolean isPalindrome(int x) {
 		var original = x;
 		var reversed = 0;
+
 		while (x > 0) {
 			reversed = reversed * 10 + x % 10;
 			x /= 10;
@@ -348,7 +354,7 @@ public class LeetCode {
 		System.out.println("reversed: " + reversed + "\n" + "original: " + x);
 		return reversed == original;
 	}
-	
+
 	public static boolean isPalindrome1(int x) {
 		if (x < 0 || x > Math.pow(2, 31) - 1) {
 			return false;
@@ -365,4 +371,44 @@ public class LeetCode {
 		System.out.println("reversed: " + reversed + "\n" + "original: " + x);
 		return (int) reversed == original;
 	}
+
+	// 121. Best Time to Buy and Sell Stock
+	public static int maxProfit(int[] prices) {
+		if (prices == null || prices.length < 1 || prices.length > 100000) {
+			throw new IllegalArgumentException("Invalid input");
+		}
+		int minPrice = Integer.MAX_VALUE;
+		int maxProfit = 0;
+
+		for (int price : prices) {
+			if (price < 0 || price > 10000) {
+				throw new IllegalArgumentException("Invalid input");
+			}
+			if (minPrice > price) {
+				minPrice = price;
+			}
+			else if (maxProfit < price - minPrice) {
+				maxProfit = price - minPrice;
+			}
+		}
+		return maxProfit;
+	}
+	
+	// 206. Reverse Linked List
+	public static ListNode reverseList(ListNode head) {
+		if (head == null || head.next == null) {
+			return head;
+		}
+		ListNode prev = null;
+		ListNode curr = head;
+		
+		while(curr != null){
+			ListNode after = curr.next;
+			curr.next = prev;
+			prev = curr;
+			curr = after;
+		}
+		return prev;
+	}
+
 }
