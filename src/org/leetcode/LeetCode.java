@@ -43,7 +43,13 @@ public class LeetCode {
 		 */
 //		System.out.println(isPalindrome(101));
 		
-		ListNode listNode3 = new ListNode(1, new ListNode(2, new ListNode(3)));
+//		System.out.println(isMatch("aa", "a"));    // false
+//        System.out.println(isMatch("aa", "a*"));   // true
+//        System.out.println(isMatch("ab", ".*"));   // true
+//        System.out.println(isMatch("aab", "c*a*b"));// true
+//        System.out.println(isMatch("mississippi", "mis*is*p*.")); // false
+        
+        ListNode listNode3 = new ListNode(1, new ListNode(2, new ListNode(3)));
 		System.out.print((listNode3));
 		System.out.println();
 		System.out.print(reverseList(listNode3));
@@ -372,43 +378,82 @@ public class LeetCode {
 		return (int) reversed == original;
 	}
 
-	// 121. Best Time to Buy and Sell Stock
-	public static int maxProfit(int[] prices) {
-		if (prices == null || prices.length < 1 || prices.length > 100000) {
-			throw new IllegalArgumentException("Invalid input");
-		}
-		int minPrice = Integer.MAX_VALUE;
-		int maxProfit = 0;
+	// 10. Regular Expression Matching "aab", "c*a*b"
+	public static boolean isMatch(String s, String p) {
+	    // Input validation
+	    if (s.length() == 0 || s.length() > 20 || p.length() == 0 || p.length() > 20) {
+	        return false;
+	    }
 
-		for (int price : prices) {
-			if (price < 0 || price > 10000) {
+	    int sLen = s.length();
+	    int pLen = p.length();
+	    int i = 0, j = 0;
+
+	    while (i < sLen && j < pLen) {
+	        char sc = s.charAt(i);
+	        char pc = p.charAt(j);
+
+	        if (pc == '.' || pc == sc) {
+	            // Direct match or wildcard
+	            i++;
+	            j++;
+	        } else if (pc == '*') {
+	            // Match zero or more of previous character
+	            if (j > 0 && (s.charAt(i) == p.charAt(j - 1) || p.charAt(j - 1) == '.')) {
+	                i++; // consume one character from s
+	            } else {
+	                j++; // move past '*'
+	            }
+	        } else {
+	            // Mismatch
+	            return false;
+	        }
+	    }
+
+	    // Skip trailing '*' patterns like a*
+	    while (j + 1 < pLen && p.charAt(j + 1) == '*') {
+	        j += 2;
+	    }
+
+	    return i == sLen && j == pLen;
+	}
+
+	// 121. Best Time to Buy and Sell Stock
+		public static int maxProfit(int[] prices) {
+			if (prices == null || prices.length < 1 || prices.length > 100000) {
 				throw new IllegalArgumentException("Invalid input");
 			}
-			if (minPrice > price) {
-				minPrice = price;
-			}
-			else if (maxProfit < price - minPrice) {
-				maxProfit = price - minPrice;
-			}
-		}
-		return maxProfit;
-	}
-	
-	// 206. Reverse Linked List
-	public static ListNode reverseList(ListNode head) {
-		if (head == null || head.next == null) {
-			return head;
-		}
-		ListNode prev = null;
-		ListNode curr = head;
-		
-		while(curr != null){
-			ListNode after = curr.next;
-			curr.next = prev;
-			prev = curr;
-			curr = after;
-		}
-		return prev;
-	}
+			int minPrice = Integer.MAX_VALUE;
+			int maxProfit = 0;
 
+			for (int price : prices) {
+				if (price < 0 || price > 10000) {
+					throw new IllegalArgumentException("Invalid input");
+				}
+				if (minPrice > price) {
+					minPrice = price;
+				}
+				else if (maxProfit < price - minPrice) {
+					maxProfit = price - minPrice;
+				}
+			}
+			return maxProfit;
+		}
+		
+		// 206. Reverse Linked List
+		public static ListNode reverseList(ListNode head) {
+			if (head == null || head.next == null) {
+				return head;
+			}
+			ListNode prev = null;
+			ListNode curr = head;
+			
+			while(curr != null){
+				ListNode after = curr.next;
+				curr.next = prev;
+				prev = curr;
+				curr = after;
+			}
+			return prev;
+		}
 }
