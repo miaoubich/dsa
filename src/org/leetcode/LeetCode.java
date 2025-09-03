@@ -42,17 +42,23 @@ public class LeetCode {
 		 * System.out.println(myAtoi("-91283472332"));
 		 */
 //		System.out.println(isPalindrome(101));
-		
+
 //		System.out.println(isMatch("aa", "a"));    // false
 //        System.out.println(isMatch("aa", "a*"));   // true
 //        System.out.println(isMatch("ab", ".*"));   // true
 //        System.out.println(isMatch("aab", "c*a*b"));// true
 //        System.out.println(isMatch("mississippi", "mis*is*p*.")); // false
-        
-        ListNode listNode3 = new ListNode(1, new ListNode(2, new ListNode(3)));
-		System.out.print((listNode3));
-		System.out.println();
-		System.out.print(reverseList(listNode3));
+
+		ListNode listNode3 = new ListNode(1, new ListNode(2, new ListNode(3)));
+//		System.out.print((listNode3));
+//		System.out.println();
+//		System.out.print(reverseList(listNode3));
+
+		int[][] matrix = { { 1, 1, 1 }, { 1, 0, 1 }, { 1, 1, 1 } };
+		System.out.println(Arrays.deepToString(matrix));
+		setZeroes(matrix);
+		System.out.println(Arrays.deepToString(matrix));
+
 	}
 
 	public static int[] twoSum(int[] nums, int target) {
@@ -380,80 +386,137 @@ public class LeetCode {
 
 	// 10. Regular Expression Matching "aab", "c*a*b"
 	public static boolean isMatch(String s, String p) {
-	    // Input validation
-	    if (s.length() == 0 || s.length() > 20 || p.length() == 0 || p.length() > 20) {
-	        return false;
-	    }
+		// Input validation
+		if (s.length() == 0 || s.length() > 20 || p.length() == 0 || p.length() > 20) {
+			return false;
+		}
 
-	    int sLen = s.length();
-	    int pLen = p.length();
-	    int i = 0, j = 0;
+		int sLen = s.length();
+		int pLen = p.length();
+		int i = 0, j = 0;
 
-	    while (i < sLen && j < pLen) {
-	        char sc = s.charAt(i);
-	        char pc = p.charAt(j);
+		while (i < sLen && j < pLen) {
+			char sc = s.charAt(i);
+			char pc = p.charAt(j);
 
-	        if (pc == '.' || pc == sc) {
-	            // Direct match or wildcard
-	            i++;
-	            j++;
-	        } else if (pc == '*') {
-	            // Match zero or more of previous character
-	            if (j > 0 && (s.charAt(i) == p.charAt(j - 1) || p.charAt(j - 1) == '.')) {
-	                i++; // consume one character from s
-	            } else {
-	                j++; // move past '*'
-	            }
-	        } else {
-	            // Mismatch
-	            return false;
-	        }
-	    }
+			if (pc == '.' || pc == sc) {
+				// Direct match or wildcard
+				i++;
+				j++;
+			} else if (pc == '*') {
+				// Match zero or more of previous character
+				if (j > 0 && (s.charAt(i) == p.charAt(j - 1) || p.charAt(j - 1) == '.')) {
+					i++; // consume one character from s
+				} else {
+					j++; // move past '*'
+				}
+			} else {
+				// Mismatch
+				return false;
+			}
+		}
 
-	    // Skip trailing '*' patterns like a*
-	    while (j + 1 < pLen && p.charAt(j + 1) == '*') {
-	        j += 2;
-	    }
+		// Skip trailing '*' patterns like a*
+		while (j + 1 < pLen && p.charAt(j + 1) == '*') {
+			j += 2;
+		}
 
-	    return i == sLen && j == pLen;
+		return i == sLen && j == pLen;
 	}
 
 	// 121. Best Time to Buy and Sell Stock
-		public static int maxProfit(int[] prices) {
-			if (prices == null || prices.length < 1 || prices.length > 100000) {
+	public static int maxProfit(int[] prices) {
+		if (prices == null || prices.length < 1 || prices.length > 100000) {
+			throw new IllegalArgumentException("Invalid input");
+		}
+		int minPrice = Integer.MAX_VALUE;
+		int maxProfit = 0;
+
+		for (int price : prices) {
+			if (price < 0 || price > 10000) {
 				throw new IllegalArgumentException("Invalid input");
 			}
-			int minPrice = Integer.MAX_VALUE;
-			int maxProfit = 0;
+			if (minPrice > price) {
+				minPrice = price;
+			} else if (maxProfit < price - minPrice) {
+				maxProfit = price - minPrice;
+			}
+		}
+		return maxProfit;
+	}
 
-			for (int price : prices) {
-				if (price < 0 || price > 10000) {
-					throw new IllegalArgumentException("Invalid input");
-				}
-				if (minPrice > price) {
-					minPrice = price;
-				}
-				else if (maxProfit < price - minPrice) {
-					maxProfit = price - minPrice;
-				}
-			}
-			return maxProfit;
+	// 206. Reverse Linked List
+	public static ListNode reverseList(ListNode head) {
+		if (head == null || head.next == null) {
+			return head;
 		}
-		
-		// 206. Reverse Linked List
-		public static ListNode reverseList(ListNode head) {
-			if (head == null || head.next == null) {
-				return head;
-			}
-			ListNode prev = null;
-			ListNode curr = head;
-			
-			while(curr != null){
-				ListNode after = curr.next;
-				curr.next = prev;
-				prev = curr;
-				curr = after;
-			}
-			return prev;
+		ListNode prev = null;
+		ListNode curr = head;
+
+		while (curr != null) {
+			ListNode after = curr.next;
+			curr.next = prev;
+			prev = curr;
+			curr = after;
 		}
+		return prev;
+	}
+
+	// 73. Set Matrix Zeroes
+	public static void setZeroes(int[][] matrix) {
+		if (matrix == null || matrix.length == 0)
+			return;
+
+		int rows = matrix.length;
+		int cols = matrix[0].length;
+
+		boolean firstRowHasZero = false;
+		boolean firstColHasZero = false;
+
+		// check the first row has zero
+		for (int j = 0; j < cols; j++) {
+			if (matrix[0][j] == 0) {
+				firstRowHasZero = true;
+				break;
+			}
+		}
+		// check the first column has zero
+		for (int i = 0; i < rows; i++) {
+			if (matrix[i][0] == 0) {
+				firstColHasZero = true;
+			}
+			break;
+		}
+		// Use the first row and first column to mark rows and columns with zeros
+		for (int i = 1; i < rows; i++) {
+			for (int j = 1; j < cols; j++) {
+				if (matrix[i][j] == 0) {
+					matrix[i][0] = 0;
+					matrix[0][j] = 0;
+				}
+			}
+		}
+
+		// Set zeros based on markers in the first row and column
+		for (int i = 1; i < rows; i++) {
+			for (int j = 1; j < cols; j++) {
+				if(matrix[i][0] == 0 || matrix[0][j] == 0)
+					matrix[i][j] = 0;
+			}
+		}
+
+		// Set zeros for the first row
+		if (firstRowHasZero) {
+			for (int j = 0; j < cols; j++) {
+				matrix[0][j] = 0;
+			}
+		}
+		// Set zeros for the first column
+		if (firstColHasZero) {
+			for (int i = 0; i < rows; i++) {
+				matrix[i][0] = 0;
+			}
+		}
+	}
+
 }
